@@ -3,11 +3,9 @@ package org.example;
 import org.example.filter.CriterionSegment;
 import org.example.filter.ServiceFilter;
 import org.example.model.Flight;
-import org.example.model.Segment;
 import org.example.testing.FlightBuilder;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
