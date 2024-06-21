@@ -3,6 +3,7 @@ package org.example.filter;
 import lombok.NoArgsConstructor;
 import org.example.model.Segment;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -11,8 +12,9 @@ public class CriterionSegment {
 
     /**
      * Убираем вылет до текущего момента времени.
+     *
      * @param segments = список сегментов
-     * @param time = время для условия
+     * @param time     = время для условия
      * @return = boolean
      */
     public boolean flightsBeforeTheCurrentTime(List<Segment> segments, LocalDateTime time) {
@@ -22,6 +24,7 @@ public class CriterionSegment {
 
     /**
      * Убираем сегменты с датой прилёта раньше даты вылета.
+     *
      * @param segments = список сегментов
      * @return = boolean
      */
@@ -38,18 +41,20 @@ public class CriterionSegment {
      * Перелеты, где общее время, проведённое на земле,
      * превышает два часа (время на земле — это интервал между прилётом одного сегмента
      * и вылетом следующего за ним).
+     *
      * @param segments = список сегментов
-     * @param x = интересующий интервал времени
+     * @param x        = интересующий интервал времени
      * @return = boolean
      */
     public boolean theTimeSpentOnEarthExceedsXHours(List<Segment> segments, int x) {
-        int minute = x * 60 + 1;
+        long res = 0;
         if (segments.size() > 1) {
             for (int i = 1; i < segments.size(); i++) {
-                LocalDateTime srav = segments.get(i).getDepartureDate().minusMinutes(minute);
-                if (segments.get(i - 1).getArrivalDate().isBefore(srav)) {
-                    return true;
-                }
+                long seconds = Duration.between(segments.get(i - 1).getArrivalDate(), segments.get(i).getDepartureDate()).getSeconds();
+                res = res + seconds / 3600;
+            }
+            if (res > x) {
+                return true;
             }
         }
         return false;
